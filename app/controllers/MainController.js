@@ -4,6 +4,7 @@ const Workflow = require("../models/Workflow");
 
 const types = require("../config/types");
 const Motorista = require("../models/Motorista");
+const { NOW } = require("sequelize");
 
 class MainController {
   index = (req, res) => res.render("map", { phone: req.query.phone });
@@ -19,108 +20,94 @@ class MainController {
   };
 
   verificarWorkflowUsuario = (phone) => {
-    let status = types.BEM_VINDO;
+    let status;
 
-    (
-      async () => 
-      {
-        let user = await Usuario.findOne({
-          where: {
-            status: "ATIVO",
-            telefone: phone,
-          },
-        });
-   
-      if (user) {
+    (async () => {
+      let user = await Usuario.findOne({
+        where: {
+          status: "ATIVO",
+          telefone: phone,
+        },
+      });
+
+      console.log(user);
+
+      if (user !== undefined && user !== null) {
+        console.log('user');
         let res = await Workflow.findOne({
           where: {
             usuario_id: user.id,
           },
         });
-        status = res.status;
+        console.log(res);
+        if (res !== undefined && res !== null) {
+          console.log('res');
+          status = res.status;
+        }
+        else {
+          status = types.BEM_VINDO;
+        }
       }
-      }
-    )();
-    
+    })();
+
     return status;
   };
 
   motoristaExists = (phone) => {
     let motorista;
-    (
-      async () => {
-        motorista = await Motorista.findOne({
-          where: {
-            telefone: phone,
-            status: "ATIVO",
-          },
-        });
-      }
-    )()
+    (async () => {
+      motorista = await Motorista.findOne({
+        where: {
+          telefone: phone,
+          status: "ATIVO",
+        },
+      });
+    })();
     return motorista !== undefined && motorista !== null ? true : false;
   };
 
-  atualizarStatusWorkflow = async (phone, status) => {
-    let user = await Usuario.findOne({
-      where: {
-        status: "ATIVO",
-        telefone: phone,
-      },
-    });
+  atualizarStatusWorkflow = (phone, status) => {
 
-    if (user) {
-      let res = await Workflow.findOne({
+    (async () => {
+      let user = await Usuario.findOne({
+        where: {
+          status: "ATIVO",
+          telefone: phone,
+        },
+      });
+      if (user === undefined || user === null) {
+        user = await Usuario.create({
+          nome: "usuario",
+          telefone: phone,
+          status: "ATIVO",
+        });
+      }
+
+      let wf = await Workflow.findOne({
         where: {
           usuario_id: user.id,
         },
       });
-      status = res.status;
-    }
-    else {
-      
-    }
-  }
 
-  /*
-  send = (client) => {
-    let text = `
-      De: [${req.body.from.lat}, ${req.body.from.lng}]
-      Para: [${req.body.to.lat}, ${req.body.to.lng}]\n
-    
-      Escolha o tipo de transporte:\n
-    `;
-    client
-      .sendText(phone, text, {
-        useTemplateButtons: true,
-        buttons: [
+      if (wf === undefined || wf === null) {
+        await Workflow.create({
+          usuario_id: user.id,
+          status: types.BEM_VINDO,
+        });
+      } else {
+        await Workflow.update(
           {
-            id: "mototaxi",
-            text: "Mototáxi",
+            status,
           },
           {
-            id: "taxi",
-            text: "Táxi",
-          },
-        ],
-        footer: "UrbanTaxi LTDA.",
-      })
-      .then(res =>
-        res.json({
-          status: true,
-          data: req.body,
-          res
-        })
-      )
-      .catch(
-        (err) => () =>
-          res.json({
-            status: false,
-            data: req.body,
-            err
-          })
-      );
+            where: {
+              usuario_id: user.id,
+            },
+          }
+        );
+      }
+    })();
   };
-  */
 }
 
 module.exports = new MainController();

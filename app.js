@@ -5,6 +5,7 @@ const cors = require("cors");
 const types = require("./app/config/types");
 const MainController = require("./app/controllers/MainController");
 const Motorista = require("./app/models/Motorista");
+const { BASE_URL } = require("./app/.env");
 const app = express();
 
 app.use(express.json());
@@ -27,10 +28,15 @@ wppconnect
 
 function start(client) {
   client.onMessage((message) => {
+    
+    console.log("nova mensagem");
+    
     var phone = message.from;
+    var nome  = message.notifyName
+    
+    console.log("core");
 
     let exists = MainController.motoristaExists(phone);
-    console.log('exists', exists );
 
     // verifica se o número é de um motorista
     if (!exists) {
@@ -38,20 +44,24 @@ function start(client) {
       // verificar se o celular já tem uma solicitação em andamento
       let status = MainController.verificarWorkflowUsuario(phone);
 
-      console.log('status', status );
-
-      if (status === types.BEM_VINDO) {
-        welcome(client, phone);
-      } else if (message.body == "Solicitar corrida" && status === types.BEM_VINDO) {
+      if (message.body != "Solicitar corrida" && status === types.BEM_VINDO) {
+        welcome(client, phone, nome);
+      } else if (
+        message.body == "Solicitar corrida" &&
+        status === types.BEM_VINDO
+      ) {
         mapa(client, phone);
-      } else if ((message.body == "Mototáxi" || message.body == "Táxi") && types.SOLICITADO) {
+      } else if (
+        (message.body == "Mototáxi" || message.body == "Táxi") &&
+        types.ESCOLHER_TIPO
+      ) {
         calcularTotal(client, phone);
       } else if (message.body == "Concluir" && types.ESCOLHER_TIPO) {
         finalizar(client, phone);
       } else if (message.body == "Cancelar" && types.ESCOLHER_TIPO) {
         cancelar(client, phone);
       } else {
-        mensagemInvalida(client, phone);
+        mensagemInvalida(client, phone, nome);
       }
     }
   });
@@ -59,6 +69,9 @@ function start(client) {
   app.get("/", MainController.index);
 
   app.post("/send-localization", function (req, res) {
+    
+    console.log('sended ' + Date.now());
+
     let text =
       `De: [${req.body.from.latitude}, ${req.body.from.longitude}]\n` +
       `Para: [${req.body.to.latitude}, ${req.body.to.longitude}]\n` +
@@ -79,13 +92,17 @@ function start(client) {
         ],
         footer: "UrbanTaxi LTDA.",
       })
-      .then((res) => {
+      .then((r) => {
+
+        MainController.atualizarStatusWorkflow(req.body.phone, types.ESCOLHER_TIPO);
+
         return res.json({
           status: true,
           data: req.body,
         });
       })
       .catch((err) => {
+        console.log(err);
         return res.json({
           status: false,
           data: err,
@@ -94,11 +111,11 @@ function start(client) {
   });
 }
 
-function welcome(client, phone) {
+function welcome(client, phone, nome) {
   client
     .sendText(
       phone,
-      "Olá, seja bem vindo ao transporte urbano da sua cidade.\n Para começar a usar o serviço, escolha uma das opções abaixo:",
+      `Olá *${nome}*, seja bem vindo ao transporte urbano da sua cidade.\n Para começar a usar o serviço, escolha uma das opções abaixo:`,
       {
         useTemplateButtons: true,
         buttons: [
@@ -114,7 +131,7 @@ function welcome(client, phone) {
         footer: "UrbanTaxi LTDA.",
       }
     )
-    .then()
+    .then((r) => MainController.atualizarStatusWorkflow(phone, types.BEM_VINDO))
     .catch((err) => console.log(err));
 }
 
@@ -124,13 +141,15 @@ function mapa(client, phone) {
       useTemplateButtons: true,
       buttons: [
         {
-          url: URL + "?phone=" + phone,
+          url: BASE_URL + "?phone=" + phone,
           text: "Mapa",
         },
       ],
       footer: "UrbanTaxi LTDA.",
     })
-    .then()
+    .then((r) =>
+      MainController.atualizarStatusWorkflow(phone, types.SOLICITADO)
+    )
     .catch((err) => console.log(err));
 }
 
@@ -166,7 +185,7 @@ function finalizar(client, phone) {
     "A UrbanTaxi agradece pela preferência. Tenha uma boa viagem.";
   client
     .sendText(phone, text)
-    .then()
+    .then((r) => MainController.atualizarStatusWorkflow(phone, types.CONCLUIDO))
     .catch((err) => console.log(err));
 }
 
@@ -174,15 +193,25 @@ function cancelar(client, phone) {
   let text = "Operação cancelada";
   client
     .sendText(phone, text)
-    .then()
+    .then((r) => MainController.atualizarStatusWorkflow(phone, types.CANCELADO))
     .catch((err) => console.log(err));
 }
 
-function mensagemInvalida(client, phone) {
-  let text = "Desculpe, não consegui entender.";
+function mensagemInvalida(client, phone, nome) {
+  let text = "Desculpe, não consegui entender. Vamos tentar novamente?";
   client
     .sendText(phone, text)
-    .then()
+    .then((r) => {
+      let status = MainController.verificarWorkflowUsuario(phone);
+console.log('status', status);
+      if (status === types.BEM_VINDO) {
+        welcome(client, phone, nome);
+      } else if (status === types.SOLICITADO) {
+        mapa(client, phone);
+      } else if (types.ESCOLHER_TIPO) {
+        calcularTotal(client, phone);
+      }
+    })
     .catch((err) => console.log(err));
 }
 
