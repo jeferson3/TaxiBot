@@ -27,22 +27,24 @@ wppconnect
   .catch((error) => console.log(error));
 
 function start(client) {
-  client.onMessage((message) => {
+  client.onMessage(async (message) => {
     
     console.log("nova mensagem");
     
     var phone = message.from;
     var nome  = message.notifyName
-    
-    console.log("core");
 
-    let exists = MainController.motoristaExists(phone);
+    let exists = await MainController.motoristaExists(phone);
+
+    console.log(exists);
 
     // verifica se o número é de um motorista
     if (!exists) {
 
       // verificar se o celular já tem uma solicitação em andamento
-      let status = MainController.verificarWorkflowUsuario(phone);
+      let status = await MainController.verificarWorkflowUsuario(phone);
+
+      console.log('status: ' + status);
 
       if (message.body != "Solicitar corrida" && status === types.BEM_VINDO) {
         welcome(client, phone, nome);
@@ -92,9 +94,9 @@ function start(client) {
         ],
         footer: "UrbanTaxi LTDA.",
       })
-      .then((r) => {
+      .then(async (r) => {
 
-        MainController.atualizarStatusWorkflow(req.body.phone, types.ESCOLHER_TIPO);
+        await MainController.atualizarStatusWorkflow(req.body.phone, types.ESCOLHER_TIPO);
 
         return res.json({
           status: true,
@@ -131,7 +133,7 @@ function welcome(client, phone, nome) {
         footer: "UrbanTaxi LTDA.",
       }
     )
-    .then((r) => MainController.atualizarStatusWorkflow(phone, types.BEM_VINDO))
+    .then(async (r) => await MainController.atualizarStatusWorkflow(phone, types.BEM_VINDO))
     .catch((err) => console.log(err));
 }
 
@@ -147,9 +149,7 @@ function mapa(client, phone) {
       ],
       footer: "UrbanTaxi LTDA.",
     })
-    .then((r) =>
-      MainController.atualizarStatusWorkflow(phone, types.SOLICITADO)
-    )
+    .then(async (r) => await MainController.atualizarStatusWorkflow(phone, types.SOLICITADO))
     .catch((err) => console.log(err));
 }
 
@@ -185,7 +185,7 @@ function finalizar(client, phone) {
     "A UrbanTaxi agradece pela preferência. Tenha uma boa viagem.";
   client
     .sendText(phone, text)
-    .then((r) => MainController.atualizarStatusWorkflow(phone, types.CONCLUIDO))
+    .then(async (r) => await MainController.atualizarStatusWorkflow(phone, types.CONCLUIDO))
     .catch((err) => console.log(err));
 }
 
@@ -193,7 +193,7 @@ function cancelar(client, phone) {
   let text = "Operação cancelada";
   client
     .sendText(phone, text)
-    .then((r) => MainController.atualizarStatusWorkflow(phone, types.CANCELADO))
+    .then(async (r) => await MainController.atualizarStatusWorkflow(phone, types.CANCELADO))
     .catch((err) => console.log(err));
 }
 
@@ -201,9 +201,9 @@ function mensagemInvalida(client, phone, nome) {
   let text = "Desculpe, não consegui entender. Vamos tentar novamente?";
   client
     .sendText(phone, text)
-    .then((r) => {
-      let status = MainController.verificarWorkflowUsuario(phone);
-console.log('status', status);
+    .then(async (r) => {
+      let status = await MainController.verificarWorkflowUsuario(phone);
+console.log('status' + status);
       if (status === types.BEM_VINDO) {
         welcome(client, phone, nome);
       } else if (status === types.SOLICITADO) {
