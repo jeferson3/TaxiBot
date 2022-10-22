@@ -13,18 +13,18 @@ const Workflow = sequelize.define(
       }
     },
     status: {
-      type: DataTypes.ENUM('SOLICITADO', 'ESCOLHER_TIPO', 'CONCLUIDO', 'CANCELADO'),
-      allowNull: false,
-      defaultValue: 'SOLICITADO'
+      type: DataTypes.STRING,
+      allowNull: false
     },
     data: {
-      type: DataTypes.DATEONLY,
-      defaultValue: DataTypes.NOW,
+      type: DataTypes.DATE,
       allowNull: false
     }
   },
   {
-    timestamps: false,
+    timestamps: true,
+    createdAt: "dataCriacao",
+    updatedAt: "dataAtualizacao",
     tableName: "workflow"
   }
 );

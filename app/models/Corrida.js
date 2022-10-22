@@ -1,7 +1,9 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Motorista = require("./Motorista");
+const Transporte = require("./Transporte");
 const Usuario = require("./Usuario");
+const Workflow = require("./Workflow");
 
 const Corrida = sequelize.define(
   "Corrida",
@@ -20,24 +22,41 @@ const Corrida = sequelize.define(
     },
     motorista_id: {
       type: DataTypes.INTEGER,
+      allowNull: true,
       references: {
         model: Motorista,
         key: "id",
       },
     },
+    transporte_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: Transporte,
+        key: "id",
+      },
+    },
+    workflow_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Workflow,
+        key: "id",
+      },
+    },
     de: {
       type: DataTypes.JSON,
-      allowNull: false,
+      allowNull: true,
     },
 
     para: {
       type: DataTypes.JSON,
-      allowNull: false,
+      allowNull: true,
     },
 
     data: {
       type: DataTypes.DATEONLY,
-      allowNull: false,
+      allowNull: true,
       defaultValue: DataTypes.NOW
     },
 
@@ -49,7 +68,7 @@ const Corrida = sequelize.define(
     
     valor: {
       type: DataTypes.DECIMAL(10, 2),
-      allowNull: false
+      allowNull: true
     },
     
   },
