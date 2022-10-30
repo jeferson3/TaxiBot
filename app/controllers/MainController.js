@@ -168,6 +168,17 @@ class MainController {
 
   }
 
+  formatMoney = (number, casas = 2, decSep = ',', thouSep = '.') => {
+    var sign = number < 0 ? "-" : "";
+    var i = String(parseInt(number = Math.abs(Number(number) || 0).toFixed(casas)));
+    var j = (j = i.length) > 3 ? j % 3 : 0;
+
+    return sign +
+        (j ? i.substr(0, j) + thouSep : "") +
+        i.substr(j).replace(/(\decSep{3})(?=\decSep)/g, "$1" + thouSep) +
+        (casas ? decSep + Math.abs(number - i).toFixed(casas).slice(2) : "");
+  }
+
   calcularTotal = async (phone) => {
 
     let user = await Usuario.findOne({
@@ -213,11 +224,9 @@ class MainController {
 
     await CorridaController.update({user, wf}, { valor: total })
 
-    total = total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-    let res = `Percurso     = ${percurso}km\n` +
-              `Bandeirada  = R$ ${bandeirada}\n` +
-              `Valor total  = R$ ${total}`;
+    let res = `Percurso     = ${this.formatMoney(percurso)}km\n` +
+              `Bandeirada  = R$ ${this.formatMoney(bandeirada)}\n` +
+              `Valor total  = R$ ${this.formatMoney(total)}`;
 
     let map = `https://www.google.com.br/maps/dir/`
                 +  `${loc_de.lat},${loc_de.lng}/`
