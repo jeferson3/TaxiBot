@@ -31,7 +31,7 @@ function start(client) {
   client.onMessage(async (message) => {
 
     var phone = message.from;
-    var nome  = message.notifyName
+    var nome  = message.notifyName.split(' ')[0] ?? 'Usuário';
   
     let exists = await MainController.motoristaExists(phone);
 
