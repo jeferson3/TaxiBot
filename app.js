@@ -137,7 +137,7 @@ function welcome(client, phone, nome) {
             text: "Central de atendimento",
           },
         ],
-        footer: "UrbanTaxi LTDA.",
+        footer: "TaxiBot LTDA.",
       }
     )
     .then()
@@ -156,7 +156,7 @@ function calcularTotal(client, phone, res) {
             text: "Google Maps",
           }
         ],
-        footer: "UrbanTaxi LTDA.",
+        footer: "TaxiBot LTDA.",
       }
     )
     .then(r => {
@@ -174,7 +174,7 @@ function calcularTotal(client, phone, res) {
               text: "Cancelar",
             },
           ],
-          footer: "UrbanTaxi LTDA.",
+          footer: "TaxiBot LTDA.",
         })
         .then()
         .catch((err) => console.log(err));
@@ -202,7 +202,7 @@ function finalizar(client, phone, nome) {
                 text: "Google Maps",
               }
             ],
-            footer: "UrbanTaxi LTDA.",
+            footer: "TaxiBot LTDA.",
           }
         )
         .then()
@@ -234,7 +234,7 @@ function localizacaoDe(client, phone) {
             text: "Tutorial",
           }
         ],
-        footer: "UrbanTaxi LTDA.",
+        footer: "TaxiBot LTDA.",
       }
     )
     .then()
@@ -257,7 +257,7 @@ function localizacaoPara(client, phone) {
             text: "Tutorial",
           }
         ],
-        footer: "UrbanTaxi LTDA.",
+        footer: "TaxiBot LTDA.",
       }
     )
     .then(res => console.log())
@@ -283,7 +283,7 @@ function escolherTipoTransporte(client, phone) {
             text: "Táxi",
           }
         ],
-        footer: "UrbanTaxi LTDA.",
+        footer: "TaxiBot LTDA.",
       }
     )
     .then()
