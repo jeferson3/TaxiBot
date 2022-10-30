@@ -27,6 +27,7 @@ wppconnect
   .catch((error) => console.log(error));
 
 function start(client) {
+
   client.onMessage(async (message) => {
 
     var phone = message.from;
@@ -97,7 +98,7 @@ function start(client) {
       // cliente finaliza solicitação
       else if (status === types.CONCLUIDO) {
         if (processamento) {
-          finalizar(client, phone);
+          finalizar(client, phone, nome);
         }
         else {
           mensagemInvalida(client, phone, nome, types.CONCLUIDO)
@@ -182,13 +183,32 @@ function calcularTotal(client, phone, res) {
 
 }
 
-function finalizar(client, phone) {
+function finalizar(client, phone, nome) {
 
   let text =
     "Sua solicitação foi registrada com sucesso, aguarde até um motorista aceitar sua corrida.";
   client
     .sendText(phone, text)
-    .then()
+    .then(async r => {
+      let res = await MainController.calcularTotal(phone);
+      
+      let txt = 'Cliente     = ' + nome + '\n' + res.txt
+      client
+        .sendText(types.GROUP_ID, txt, {
+            useTemplateButtons: true,
+            buttons: [
+              {
+                url: res.mapa,
+                text: "Google Maps",
+              }
+            ],
+            footer: "UrbanTaxi LTDA.",
+          }
+        )
+        .then()
+        .catch((err) => console.log(err));
+
+    })
     .catch((err) => console.log(err));
 }
 
@@ -299,7 +319,7 @@ function mensagemInvalida(client, phone, nome, type, txt = '') {
           break;
 
         case types.CONCLUIDO:
-          finalizar(client, phone);
+          finalizar(client, phone, nome);
           break;
 
         case types.CANCELADO:

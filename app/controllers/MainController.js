@@ -213,9 +213,11 @@ class MainController {
 
     await CorridaController.update({user, wf}, { valor: total })
 
-    let res = `Percurso    = ${percurso}km\n` +
+    total = total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    let res = `Percurso     = ${percurso}km\n` +
               `Bandeirada  = R$ ${bandeirada}\n` +
-              `Valor total = R$ ${total}`;
+              `Valor total  = R$ ${total}`;
 
     let map = `https://www.google.com.br/maps/dir/`
                 +  `${loc_de.lat},${loc_de.lng}/`

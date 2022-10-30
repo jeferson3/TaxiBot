@@ -5,3 +5,4 @@ module.exports.LOCALIZACAO_PARA = 'LOCALIZACAO_PARA'; // escolher localização 
 module.exports.ESCOLHER_TIPO = 'ESCOLHER_TIPO' // escolher tipo de transporte para a corrida
 module.exports.CONCLUIDO = 'CONCLUIDO' // concluir solicitação
 module.exports.CANCELADO = 'CANCELADO' // cancelar solicitação
+module.exports.GROUP_ID = '120363024911630343@g.us';
