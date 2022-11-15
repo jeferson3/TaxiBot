@@ -35,7 +35,7 @@ function start(client) {
   
     let exists = await MainController.motoristaExists(phone);
 
-    // verifica se o número é de um motorista
+    // verifica se o número não é de um motorista
     if (!exists) {
 
       // processar mensagem do usuário
