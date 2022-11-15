@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,7 +17,6 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.38",
     "mysql2": "^2.3.3",
-    "nodemon": "^2.0.19",
     "sequelize": "^6.21.3"
   }
 }
