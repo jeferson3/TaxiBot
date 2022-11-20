@@ -17,17 +17,6 @@ const Motorista = sequelize.define(
       type: DataTypes.STRING(20),
       allowNull: false,
     },
-
-    latitude: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-    },
-
-    longitude: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-    },
-
     status: {
       type: DataTypes.ENUM('ATIVO', 'INATIVO'),
       allowNull: false,

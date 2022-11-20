@@ -5,6 +5,11 @@ const Usuario = require("./Usuario");
 const Workflow = sequelize.define(
   "Workflow",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     usuario_id: {
       type: DataTypes.INTEGER,
       references: {
