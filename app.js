@@ -133,7 +133,7 @@ function welcome(client, phone, nome) {
             text: "Solicitar corrida",
           },
           {
-            phoneNumber: "+55 11 22334455",
+            phoneNumber: "+55 87 9 88363914",
             text: "Central de atendimento",
           },
         ],
