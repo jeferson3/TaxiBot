@@ -225,7 +225,8 @@ class MainController {
     await CorridaController.update({user, wf}, { valor: total })
 
     let res = `Percurso     = ${this.formatMoney(percurso)}km\n` +
-              `Bandeirada  = R$ ${this.formatMoney(bandeirada)}\n` +
+              `Bandeirada   = R$ ${this.formatMoney(bandeirada)}\n` +
+              `Transporte   = R$ ${transporte.nome}\n` +
               `Valor total  = R$ ${this.formatMoney(total)}`;
 
     let map = `https://www.google.com.br/maps/dir/`
