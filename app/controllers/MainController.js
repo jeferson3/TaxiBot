@@ -226,7 +226,7 @@ class MainController {
 
     let res = `Percurso     = ${this.formatMoney(percurso)}km\n` +
               `Bandeirada   = R$ ${this.formatMoney(bandeirada)}\n` +
-              `Transporte   = R$ ${transporte.nome}\n` +
+              `Transporte   = ${transporte.nome}\n` +
               `Valor total  = R$ ${this.formatMoney(total)}`;
 
     let map = `https://www.google.com.br/maps/dir/`
