@@ -222,7 +222,7 @@ function cancelar(client, phone) {
 
 function localizacaoDe(client, phone) {
   
-  let text = "Para iniciar uma nova corrida, precisamos que nos envie sua localização:\n" + 
+  let text = "Para iniciar uma nova corrida, precisamos que nos envie *sua localização*:\n" + 
 		          "Para saber como enviar localização no whatsapp clique no link abaixo e veja um tutorial\n"
 		
   client
@@ -245,7 +245,7 @@ function localizacaoDe(client, phone) {
 
 function localizacaoPara(client, phone) {
   
-  let text = "Muito bem, agora precisamos que nos envie a localização de onde deseja ir:\n" + 
+  let text = "Muito bem, agora precisamos que nos envie a localização de *onde deseja ir*:\n" + 
 		          "Para saber como enviar localização no whatsapp clique no link abaixo e veja um tutorial\n"
 		
   client
