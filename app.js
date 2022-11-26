@@ -230,7 +230,7 @@ function localizacaoDe(client, phone) {
         useTemplateButtons: true,
         buttons: [
           {
-            url: "https://tecnoblog.net/responde/como-mandar-a-sua-localizacao-pelo-whatsapp",
+            url: "https://canaltech.com.br/apps/como-enviar-sua-localizacao-pelo-whatsapp/",
             text: "Tutorial",
           }
         ],
@@ -253,7 +253,7 @@ function localizacaoPara(client, phone) {
         useTemplateButtons: true,
         buttons: [
           {
-            url: "https://tecnoblog.net/responde/como-mandar-a-sua-localizacao-pelo-whatsapp",
+            url: "https://canaltech.com.br/apps/como-enviar-sua-localizacao-pelo-whatsapp/",
             text: "Tutorial",
           }
         ],
